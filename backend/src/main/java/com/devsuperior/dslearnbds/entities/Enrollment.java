@@ -2,11 +2,9 @@ package com.devsuperior.dslearnbds.entities;
 
 import com.devsuperior.dslearnbds.entities.pk.EnrollmentPK;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_enrollment")
@@ -22,6 +20,12 @@ public class Enrollment {
     private Instant refundMoment;
     private boolean available;
     private boolean onlyUpdate;
+
+    @ManyToMany(mappedBy = "enrollmentsDone")
+    private Set<Lesson> lessonsDone = new HashSet<>();
+
+    @OneToMany(mappedBy = "enrollment")
+    private List<Deliver> deliveries = new ArrayList<>();
 
     public Enrollment() {
     }
@@ -83,5 +87,20 @@ public class Enrollment {
         this.onlyUpdate = onlyUpdate;
     }
 
+    public List<Deliver> getDeliveries() {
+        return deliveries;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Enrollment that = (Enrollment) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
